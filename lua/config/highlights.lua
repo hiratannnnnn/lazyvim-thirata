@@ -3,6 +3,7 @@ local function set_highlights()
   vim.api.nvim_set_hl(0, "Normal", { bg = "#1c1c1c", fg = "#e0e0e0" })
   vim.api.nvim_set_hl(0, "LineNr", { fg = "#5a5a5a" })
   vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2a2d2e" })
+  vim.api.nvim_set_hl(0, "TermCursor", { bg = "#3c8d6c", fg = "#ffffff" })
 
   -- 関数 (#ffa66e オレンジ)
   vim.api.nvim_set_hl(0, "@function", { fg = "#ffa66e" })

@@ -6,6 +6,7 @@ vim.opt.wrap = false
 vim.opt.expandtab = false
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
+vim.opt.guicursor = vim.o.guicursor:gsub("t:[^,]*", "t:block-blinkon600-blinkoff600-TermCursor")
 
 if vim.g.neovide then
 	vim.g.neovide_theme = "dark"
