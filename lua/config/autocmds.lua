@@ -21,6 +21,47 @@ vim.api.nvim_create_autocmd({"FocusLost", "BufLeave"}, {
   command = "silent! wa",
 })
 
+local function is_mozc_active()
+  if vim.fn.executable("ibus") == 1 then
+    local engine = vim.trim(vim.fn.system({ "ibus", "engine" })):lower()
+    if vim.v.shell_error == 0 and engine:find("mozc", 1, true) then
+      return true
+    end
+  end
+
+  for _, command in ipairs({ "fcitx5-remote", "fcitx-remote" }) do
+    if vim.fn.executable(command) == 1 then
+      local engine = vim.trim(vim.fn.system({ command, "-n" })):lower()
+      if vim.v.shell_error == 0 and engine:find("mozc", 1, true) then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
+local last_mozc_notification = 0
+
+vim.api.nvim_create_autocmd({ "FocusGained", "VimEnter" }, {
+  group = vim.api.nvim_create_augroup("mozc_focus_notification", { clear = true }),
+  callback = function()
+    local now = vim.uv.hrtime()
+    if now - last_mozc_notification < 1500000000 then
+      return
+    end
+
+    if is_mozc_active() then
+      last_mozc_notification = now
+      vim.api.nvim_set_hl(0, "MozcNotificationBorder", { fg = "#ffd700" })
+      vim.notify("今Mozcになってるよ！", vim.log.levels.INFO, {
+        title = "IME",
+        hl = { border = "MozcNotificationBorder" },
+      })
+    end
+  end,
+})
+
 local function delete_empty_unnamed_buffers()
   local current = vim.api.nvim_get_current_buf()
 

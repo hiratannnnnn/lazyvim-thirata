@@ -43,6 +43,66 @@ end, {
   nowait = true,
 })
 
+vim.keymap.set("n", "<leader>ft", function()
+  local root = LazyVim.root()
+  local project = vim.fn.fnamemodify(root, ":t")
+
+  local function update_terminal_title(win)
+    if not win:valid() or vim.api.nvim_get_current_win() ~= win.win then
+      return
+    end
+
+    local mode = vim.api.nvim_get_mode().mode
+    local label, highlight
+    if mode:sub(1, 1) == "t" then
+      label, highlight = "TERMINAL", "DiagnosticInfo"
+    elseif mode:sub(1, 1) == "i" then
+      label, highlight = "INSERT", "DiagnosticWarn"
+    else
+      label, highlight = "NORMAL", "DiagnosticHint"
+    end
+
+    win:set_title({
+      { " 󰆍  ", "DiagnosticInfo" },
+      { project .. "  ", "SnacksTitle" },
+      { "● " .. label .. " ", highlight },
+    }, "center")
+  end
+
+  Snacks.terminal(nil, {
+    cwd = root,
+    win = {
+      position = "float",
+      width = 0.84,
+      height = 0.8,
+      border = "rounded",
+      backdrop = 60,
+      title = " 󰆍  Terminal · " .. project .. " ",
+      title_pos = "center",
+      footer = " Ctrl-/ hide  ·  Esc ×2 normal ",
+      footer_pos = "center",
+      keys = {
+        hide_slash_normal = {
+          "<C-/>",
+          "hide",
+          mode = "n",
+          desc = "Hide Terminal",
+        },
+        hide_underscore_normal = {
+          "<C-_>",
+          "hide",
+          mode = "n",
+          desc = "which_key_ignore",
+        },
+      },
+      on_win = function(win)
+        win:on({ "ModeChanged", "TermEnter", "TermLeave" }, update_terminal_title)
+        update_terminal_title(win)
+      end,
+    },
+  })
+end, { desc = "Terminal (Root Dir, Float)" })
+
 for _, lhs in ipairs({ "<C-/>", "<C-_>" }) do
   vim.keymap.set("n", lhs, "gcc", { remap = true, desc = "Toggle comment" })
   vim.keymap.set("v", lhs, "gc", { remap = true, desc = "Toggle comment" })
