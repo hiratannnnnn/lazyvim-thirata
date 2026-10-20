@@ -8,6 +8,11 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.guicursor = vim.o.guicursor:gsub("t:[^,]*", "t:block-blinkon600-blinkoff600-TermCursor")
 
+local swap_root = vim.fn.stdpath("state") .. "/swap"
+local swap_dir = swap_root .. "/" .. vim.uv.os_gethostname()
+vim.fn.mkdir(swap_dir, "p")
+vim.opt.directory = swap_dir .. "//"
+
 if vim.g.neovide then
 	vim.g.neovide_theme = "dark"
 	vim.o.background = "dark"

@@ -90,3 +90,42 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end
   end,
 })
+
+local swap_root = vim.fn.stdpath("state") .. "/swap"
+local swap_max_age = 7 * 24 * 60 * 60
+
+local function cleanup_swapfiles(dir, keep_dir)
+  local scanner = vim.uv.fs_scandir(dir)
+  if not scanner then
+    return
+  end
+
+  while true do
+    local name, kind = vim.uv.fs_scandir_next(scanner)
+    if not name then
+      break
+    end
+
+    local path = dir .. "/" .. name
+    if kind == "directory" then
+      cleanup_swapfiles(path, false)
+    elseif kind == "file" and name:match("%.sw.$") then
+      local stat = vim.uv.fs_stat(path)
+      local info = vim.fn.swapinfo(path)
+      local expired = stat and os.time() - stat.mtime.sec > swap_max_age
+      local unmodified = not info.error and info.dirty == 0
+
+      if expired and unmodified then
+        vim.uv.fs_unlink(path)
+      end
+    end
+  end
+
+  if not keep_dir then
+    vim.uv.fs_rmdir(dir)
+  end
+end
+
+vim.schedule(function()
+  cleanup_swapfiles(swap_root, true)
+end)
