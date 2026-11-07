@@ -14,7 +14,14 @@ vim.fn.mkdir(swap_dir, "p")
 vim.opt.directory = swap_dir .. "//"
 
 if vim.g.neovide then
-	vim.g.neovide_theme = "dark"
-	vim.o.background = "dark"
-	vim.o.guifont = "JetBrainsMono Nerd Font Mono:h14"
+  vim.g.neovide_opacity = 0.83
+  vim.g.neovide_normal_opacity = 0.83
+
+  vim.keymap.set("n", "<F11>", function()
+    vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
+  end, { desc = "Neovide: 全画面表示を切り替え" })
+
+  vim.g.neovide_theme = "dark"
+  vim.o.background = "dark"
+  vim.o.guifont = "JetBrainsMono Nerd Font Mono:h14"
 end
