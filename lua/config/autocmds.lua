@@ -16,6 +16,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("markdown_no_spell", { clear = true }),
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+})
+
 vim.api.nvim_create_autocmd({"FocusLost", "BufLeave"}, {
   pattern = "*",
   command = "silent! wa",

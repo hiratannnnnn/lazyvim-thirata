@@ -5,6 +5,14 @@ local function set_highlights()
   vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2a2d2e" })
   vim.api.nvim_set_hl(0, "TermCursor", { bg = "#3c8d6c", fg = "#ffffff" })
 
+  -- Markdownのインラインコード（`code`）
+  vim.api.nvim_set_hl(0, "RenderMarkdownCodeInline", { bg = "#2a2d2e", fg = "#ffcfb1" })
+
+  -- Markdownの見出しは文字色だけを変え、背景は本文と揃える
+  for level = 1, 6 do
+    vim.api.nvim_set_hl(0, "RenderMarkdownH" .. level .. "Bg", { bg = "#1c1c1c" })
+  end
+
   -- 関数 (#ffa66e オレンジ)
   vim.api.nvim_set_hl(0, "@function", { fg = "#ffa66e" })
   vim.api.nvim_set_hl(0, "@function.call", { fg = "#ffa66e" })

@@ -6,6 +6,8 @@ return {
       vim.list_extend(opts.ensure_installed, {
         "comment",
         "doxygen",
+        "markdown",
+        "markdown_inline",
       })
     end,
   },
